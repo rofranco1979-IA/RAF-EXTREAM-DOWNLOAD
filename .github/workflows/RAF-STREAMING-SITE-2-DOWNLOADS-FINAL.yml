@@ -1,0 +1,155 @@
+name: Publicar site RAF-STREAMING com 2 downloads
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Criar site
+        shell: bash
+        run: |
+          mkdir -p site
+
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>RAF-STREAMING — Download</title>
+            <meta name="description" content="Baixe RAF-STREAMING ou RAF-STREAMING TV Fácil.">
+            <style>
+              *{box-sizing:border-box}
+              body{margin:0;background:#07080b;color:#fff;font-family:Arial,Helvetica,sans-serif}
+              .wrap{max-width:1080px;margin:auto;padding:24px}
+              header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid #242731}
+              .logo{font-size:34px;font-weight:900;letter-spacing:-1px}.logo span{color:#ff2741}
+              .version{color:#c7cad3;font-size:17px}
+              .hero{text-align:center;padding:54px 0 34px}
+              .hero h1{font-size:48px;margin:0 0 14px;line-height:1.1}
+              .hero p{max-width:760px;margin:0 auto 18px;color:#b7bbc6;font-size:20px;line-height:1.55}
+              .devices{font-size:18px;color:#e1e3e8;margin-top:25px}
+              .cards{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+              .card{position:relative;background:linear-gradient(180deg,#14161d,#0d0f14);border:1px solid #373a45;border-radius:26px;padding:30px;overflow:hidden}
+              .card:before{content:"";position:absolute;inset:auto -80px -120px auto;width:250px;height:250px;background:#ff27411b;border-radius:50%;filter:blur(8px)}
+              .standard{border-color:#ff3550}
+              .premium{border-color:#ff3550}
+              .badge{display:inline-block;padding:8px 14px;border-radius:999px;background:#391019;color:#ff6678;font-weight:800;font-size:13px}
+              .premium .badge{background:#ff2741;color:#fff}
+              h2{font-size:31px;margin:18px 0 10px}
+              .desc{color:#b8bdc8;font-size:17px;line-height:1.55;min-height:82px}
+              .screen{position:relative;height:165px;border-radius:17px;background:linear-gradient(135deg,#131923,#241117);border:1px solid #333845;margin:24px 0;padding:18px}
+              .bar{height:10px;width:46%;background:#ff304a;border-radius:8px;margin-bottom:15px}
+              .poster{display:inline-block;width:22%;height:83px;background:#292e3a;border-radius:8px;margin-right:2%}
+              .line{height:19px;background:#2a2f3a;border-radius:7px;margin:10px 0}
+              .line.sel{background:#ff304a;width:78%}
+              ul{padding-left:22px;line-height:1.95;color:#e6e8ed;font-size:17px}
+              .btn{display:block;position:relative;z-index:2;margin-top:26px;padding:21px 16px;border-radius:17px;background:#ff2741;color:#fff;text-decoration:none;text-align:center;font-size:21px;font-weight:900;box-shadow:0 10px 30px #ff274138}
+              .premium .btn{background:#ff2741}
+              .note{text-align:center;color:#828794;font-size:14px;margin-top:13px}
+              footer{text-align:center;color:#777c88;padding:46px 0 20px}
+              @media(max-width:760px){
+                .wrap{padding:18px}
+                header{align-items:flex-start;flex-direction:column}
+                .logo{font-size:28px}
+                .hero{padding-top:36px}
+                .hero h1{font-size:38px}
+                .hero p{font-size:18px}
+                .cards{grid-template-columns:1fr}
+              }
+            </style>
+          </head>
+          <body>
+            <div class="wrap">
+              <header>
+                <div class="logo">RAF-<span>STREAMING</span></div>
+                <div class="version">Streaming 1.7.5 • TV Fácil 1.0.0</div>
+              </header>
+
+              <section class="hero">
+                <h1>Escolha como você quer assistir</h1>
+                <p>Duas opções, dois aplicativos separados. Instale apenas o que preferir ou mantenha os dois no mesmo aparelho.</p>
+                <div class="devices">Android • Android TV • Google TV • TV Box • Fire TV</div>
+              </section>
+
+              <section class="cards">
+                <article class="card standard">
+                  <span class="badge">COMPLETO</span>
+                  <h2>RAF-STREAMING</h2>
+                  <div class="desc">Catálogo visual completo para explorar TV, filmes e séries, com busca e favoritos.</div>
+
+                  <div class="screen">
+                    <div class="bar"></div>
+                    <span class="poster"></span><span class="poster"></span><span class="poster"></span><span class="poster"></span>
+                  </div>
+
+                  <ul>
+                    <li>TV ao vivo</li>
+                    <li>Filmes e séries</li>
+                    <li>Busca e favoritos</li>
+                    <li>Catálogo visual</li>
+                    <li>Celular, TV e Box</li>
+                  </ul>
+
+                  <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/streaming-stable/RAF-STREAMING.apk">BAIXAR RAF-STREAMING</a>
+                </article>
+
+                <article class="card premium">
+                  <span class="badge">TV FÁCIL</span>
+                  <h2>RAF-STREAMING TV Fácil</h2>
+                  <div class="desc">Versão simplificada, feita para quem quer ligar, escolher o canal e assistir usando o controle remoto.</div>
+
+                  <div class="screen">
+                    <div class="bar" style="width:34%"></div>
+                    <div class="line sel"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                  </div>
+
+                  <ul>
+                    <li>Abre direto na TV</li>
+                    <li>Lista simples de canais</li>
+                    <li>Navegação pelo controle</li>
+                    <li>Troca rápida de canal</li>
+                    <li>Review e programação</li>
+                  </ul>
+
+                  <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/tv-facil-stable/RAF-STREAMING-TV-FACIL.apk">BAIXAR TV FÁCIL</a>
+                </article>
+              </section>
+
+              <p class="note">Os dois aplicativos podem ficar instalados ao mesmo tempo.</p>
+              <footer>RAF-STREAMING</footer>
+            </div>
+          </body>
+          </html>
+          HTML
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
