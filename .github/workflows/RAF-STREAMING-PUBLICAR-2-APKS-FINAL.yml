@@ -1,0 +1,68 @@
+name: Publicar RAF-STREAMING e TV Fácil
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Baixar arquivos
+        uses: actions/checkout@v4
+
+      - name: Validar APKs
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          for APK in RAF-STREAMING.apk RAF-STREAMING-TV-FACIL.apk; do
+            test -f "$APK"
+            SIZE=$(stat -c%s "$APK")
+            echo "$APK: $SIZE bytes"
+
+            if [ "$SIZE" -lt 1000000 ]; then
+              echo "ERRO: $APK menor que 1 MB."
+              exit 1
+            fi
+
+            unzip -t "$APK" >/dev/null
+          done
+
+          echo "Os dois APKs foram validados."
+
+      - name: Publicar RAF-STREAMING
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="streaming-stable"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" RAF-STREAMING.apk --clobber
+          else
+            gh release create "$TAG" RAF-STREAMING.apk               --title "RAF-STREAMING Estável"               --notes "Versão estável do RAF-STREAMING."
+          fi
+
+      - name: Publicar RAF-STREAMING TV Fácil
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="tv-facil-stable"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" RAF-STREAMING-TV-FACIL.apk --clobber
+          else
+            gh release create "$TAG" RAF-STREAMING-TV-FACIL.apk               --title "RAF-STREAMING TV Fácil Estável"               --notes "Versão estável do RAF-STREAMING TV Fácil."
+          fi
+
+          echo ""
+          echo "Downloads fixos:"
+          echo "https://github.com/${GITHUB_REPOSITORY}/releases/download/streaming-stable/RAF-STREAMING.apk"
+          echo "https://github.com/${GITHUB_REPOSITORY}/releases/download/tv-facil-stable/RAF-STREAMING-TV-FACIL.apk"
