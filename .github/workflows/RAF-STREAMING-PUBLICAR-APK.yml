@@ -1,0 +1,50 @@
+name: Publicar APK estável RAF-STREAMING
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+    paths:
+      - 'RAF-STREAMING.apk'
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar arquivos do repositório
+        uses: actions/checkout@v4
+
+      - name: Validar APK
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f RAF-STREAMING.apk
+          SIZE=$(stat -c%s RAF-STREAMING.apk)
+          echo "Tamanho: ${SIZE} bytes"
+          if [ "$SIZE" -lt 1000000 ]; then
+            echo "ERRO: APK menor que 1 MB. Publicação cancelada."
+            exit 1
+          fi
+          unzip -t RAF-STREAMING.apk >/dev/null
+          echo "APK validado com sucesso."
+          sha256sum RAF-STREAMING.apk
+
+      - name: Criar ou atualizar release estável do Streaming
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          TAG="streaming-stable"
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" RAF-STREAMING.apk --clobber
+          else
+            gh release create "$TAG" RAF-STREAMING.apk \
+              --title "RAF-STREAMING Estável" \
+              --notes "Versão estável do RAF-STREAMING para Android, Android TV, Google TV, TV Box e Fire TV."
+          fi
+          echo "https://github.com/${GITHUB_REPOSITORY}/releases/download/${TAG}/RAF-STREAMING.apk"
