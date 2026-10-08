@@ -1,0 +1,96 @@
+name: Publicar site RAF-STREAMING
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Criar site
+        shell: bash
+        run: |
+          mkdir -p site
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>RAF-STREAMING — Download</title>
+            <meta name="description" content="Baixe o RAF-STREAMING para Android, TV Box, Android TV, Google TV e Fire TV.">
+            <style>
+              *{box-sizing:border-box}
+              body{margin:0;background:#07080b;color:#fff;font-family:Arial,Helvetica,sans-serif}
+              .wrap{max-width:1080px;margin:auto;padding:24px}
+              header{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid #252832}
+              .logo{font-size:34px;font-weight:900;letter-spacing:-1px}.logo span{color:#ff243c}
+              .hero{padding:56px 0 34px;text-align:center}.hero h1{font-size:48px;margin:0 0 12px}
+              .hero p{font-size:21px;color:#b9bdc8;margin:0 auto 26px;max-width:760px;line-height:1.5}
+              .devices{color:#d4d7df;font-size:18px;margin-bottom:32px}
+              .cards{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+              .card{background:linear-gradient(180deg,#13151c,#0d0f14);border:1px solid #343744;border-radius:24px;padding:28px;min-height:390px}
+              .card.active{border-color:#ff304a;box-shadow:0 0 36px #ff243c22}
+              .badge{display:inline-block;padding:7px 12px;border-radius:999px;background:#331018;color:#ff6273;font-weight:700;font-size:13px}
+              .card h2{font-size:30px;margin:16px 0 10px}.card p{color:#b9bdc8;font-size:17px;line-height:1.5}
+              .screen{height:145px;border-radius:16px;background:linear-gradient(135deg,#141a24,#251017);border:1px solid #303543;margin:22px 0;padding:18px;text-align:left}
+              .screen .bar{height:10px;border-radius:8px;background:#ff304a;width:48%;margin-bottom:14px}
+              .screen .tile{display:inline-block;width:23%;height:72px;border-radius:8px;background:#262b35;margin-right:1.5%}
+              .btn{display:block;text-decoration:none;background:#ff243c;color:#fff;text-align:center;font-size:22px;font-weight:900;padding:20px;border-radius:16px;margin-top:24px;box-shadow:0 9px 28px #ff243c3a}
+              .soon{display:block;text-align:center;background:#22252d;color:#858b98;font-size:19px;font-weight:800;padding:20px;border-radius:16px;margin-top:24px}
+              ul{padding-left:22px;color:#e6e7eb;line-height:1.9}footer{text-align:center;color:#777e8c;padding:44px 0 20px}
+              @media(max-width:760px){.wrap{padding:18px}.logo{font-size:27px}.hero{padding-top:36px}.hero h1{font-size:37px}.hero p{font-size:18px}.cards{grid-template-columns:1fr}}
+            </style>
+          </head>
+          <body>
+            <div class="wrap">
+              <header><div class="logo">RAF-<span>STREAMING</span></div><div>Versão estável 1.7.5</div></header>
+              <section class="hero">
+                <h1>Escolha como você quer assistir</h1>
+                <p>O RAF-STREAMING terá duas experiências. Primeiro estamos liberando a versão completa. O TV Fácil será a segunda opção, focada em simplicidade e controle remoto.</p>
+                <div class="devices">Android • Android TV • Google TV • TV Box • Fire TV</div>
+              </section>
+              <section class="cards">
+                <article class="card active">
+                  <span class="badge">DISPONÍVEL</span>
+                  <h2>RAF-STREAMING</h2>
+                  <p>Experiência completa com TV, filmes, séries, busca, favoritos e catálogo visual.</p>
+                  <div class="screen"><div class="bar"></div><span class="tile"></span><span class="tile"></span><span class="tile"></span><span class="tile"></span></div>
+                  <ul><li>Catálogo completo</li><li>TV ao vivo</li><li>Filmes e séries</li><li>Busca e favoritos</li><li>Compatível com celular e TV/Box</li></ul>
+                  <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/streaming-stable/RAF-STREAMING.apk">BAIXAR RAF-STREAMING</a>
+                </article>
+                <article class="card">
+                  <span class="badge">SEGUNDA OPÇÃO</span>
+                  <h2>RAF-STREAMING TV Fácil</h2>
+                  <p>Interface simplificada para quem prefere ligar, escolher o canal e assistir usando o controle remoto.</p>
+                  <div class="screen"><div class="bar" style="width:35%"></div><div style="height:18px;background:#282d37;border-radius:6px;margin:8px 0"></div><div style="height:18px;background:#282d37;border-radius:6px;margin:8px 0"></div><div style="height:18px;background:#282d37;border-radius:6px;margin:8px 0"></div></div>
+                  <ul><li>Abre direto na TV</li><li>Lista simples de canais</li><li>Navegação por controle remoto</li><li>Troca rápida de canal</li><li>Review e programação</li></ul>
+                  <span class="soon">EM BREVE</span>
+                </article>
+              </section>
+              <footer>RAF-STREAMING</footer>
+            </div>
+          </body>
+          </html>
+          HTML
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+      - name: Enviar site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
