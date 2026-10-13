@@ -1,0 +1,34 @@
+name: Publicar RAF STREAMING V7.6
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  publicar:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Baixar repositório
+        uses: actions/checkout@v4
+
+      - name: Publicar V7.6 como release mais recente
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          TAG="v7.6"
+          APK="RAF-STREAMING-V7.6.apk"
+
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release upload "$TAG" "$APK" --clobber
+            gh release edit "$TAG" \
+              --title "RAF STREAMING V7.6" \
+              --notes "Versão atual do RAF STREAMING para Android." \
+              --latest
+          else
+            gh release create "$TAG" "$APK" \
+              --title "RAF STREAMING V7.6" \
+              --notes "Versão atual do RAF STREAMING para Android." \
+              --latest
+          fi
