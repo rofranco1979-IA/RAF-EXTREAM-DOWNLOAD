@@ -1,0 +1,272 @@
+name: Publicar site RAF STREAMING V7.6.10
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Criar site
+        shell: bash
+        run: |
+          mkdir -p site
+
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+            <title>RAF STREAMING — Download</title>
+            <meta name="description" content="Escolha sua versão do RAF STREAMING.">
+            <style>
+              *{box-sizing:border-box}
+              html,body{margin:0;min-height:100%;background:#06080d;color:#fff;font-family:Arial,Helvetica,sans-serif}
+              body{background:
+                radial-gradient(circle at 8% 8%,rgba(255,45,72,.10),transparent 22%),
+                radial-gradient(circle at 88% 18%,rgba(40,120,255,.11),transparent 30%),
+                #06080d}
+              a{text-decoration:none}
+              .page{max-width:1120px;margin:0 auto;padding:18px 18px 28px}
+              header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:8px 0 18px;border-bottom:1px solid #1f2430}
+              .brand{display:flex;align-items:center;gap:12px}
+              .brandMark{width:36px;height:36px;border-radius:10px;background:#ff2d48;display:flex;align-items:center;justify-content:center;font-weight:900;box-shadow:0 8px 24px rgba(255,45,72,.26)}
+              .brandText{font-size:28px;font-weight:900;letter-spacing:-.6px}
+              .brandText span{color:#ff2d48}
+              .siteVersion{font-size:13px;color:#9aa3b3}
+
+              .hero{display:grid;grid-template-columns:1.04fr .96fr;gap:18px;align-items:center;padding:26px 0 18px}
+              .heroText h1{margin:0 0 10px;font-size:44px;line-height:1.04}
+              .heroText p{margin:0 0 16px;color:#b1b8c4;font-size:17px;line-height:1.5;max-width:560px}
+              .chips{display:flex;flex-wrap:wrap;gap:10px;margin-bottom:18px}
+              .chip{padding:8px 12px;border-radius:999px;background:#10141d;border:1px solid #252b36;color:#d6dbe5;font-size:13px}
+              .actions{display:flex;flex-wrap:wrap;gap:12px}
+              .btnMain,.btnGhost{display:inline-flex;align-items:center;justify-content:center;padding:16px 20px;border-radius:15px;font-weight:900;font-size:15px;min-width:220px}
+              .btnMain{background:#ff2d48;color:#fff;box-shadow:0 10px 30px rgba(255,45,72,.22)}
+              .btnGhost{background:#131925;color:#fff;border:1px solid #273042}
+
+              .mockWrap{background:linear-gradient(180deg,#11151d 0%,#0b0f15 100%);border:1px solid #232936;border-radius:28px;padding:18px;position:relative;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.28)}
+              .mockWrap:before{content:"";position:absolute;inset:auto -60px -70px auto;width:220px;height:220px;background:radial-gradient(circle,rgba(255,45,72,.25),transparent 65%);pointer-events:none}
+              .mockWrap:after{content:"";position:absolute;inset:-60px auto auto -50px;width:170px;height:170px;background:radial-gradient(circle,rgba(40,120,255,.16),transparent 70%);pointer-events:none}
+              .mockTop{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:14px;position:relative;z-index:1}
+              .mockBrand{font-weight:900;font-size:26px;letter-spacing:-.5px}.mockBrand span{color:#ff2d48}
+              .mockBadge{padding:9px 14px;border-radius:999px;background:#121927;border:1px solid #2c3442;color:#d7dce7;font-weight:800;font-size:14px}
+              .mockHero{position:relative;z-index:1;border-radius:22px;padding:18px;background:linear-gradient(135deg,rgba(31,40,66,.95),rgba(66,17,29,.78));border:1px solid #283247;min-height:180px}
+              .mockHero h3{margin:0 0 8px;font-size:20px}.mockHero p{margin:0;color:#d7dde7;font-size:14px;line-height:1.45;max-width:280px}
+              .mockButton{display:inline-block;margin-top:16px;padding:14px 18px;border-radius:14px;background:#ff2d48;color:#fff;font-weight:900;font-size:14px}
+              .miniGrid{position:relative;z-index:1;display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-top:14px}
+              .miniCard{border-radius:16px;background:linear-gradient(180deg,#202734,#10151d);border:1px solid #293245;min-height:74px;display:flex;align-items:flex-end;padding:10px;color:#fff;font-size:11px;font-weight:700}
+              .miniCard.on{border-color:#ff4860;box-shadow:inset 0 0 0 1px rgba(255,45,72,.32)}
+
+              .versions{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:10px}
+              .card{position:relative;border-radius:24px;padding:24px;border:1px solid #2b313c;background:linear-gradient(180deg,#12161e 0%,#0a0d13 100%);overflow:hidden}
+              .card:after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;right:-90px;bottom:-120px;filter:blur(18px);opacity:.34;pointer-events:none}
+              .complete{border-color:#5a2732}.complete:after{background:#ff2d48}
+              .easy{border-color:#263d63}.easy:after{background:#2b78ff}
+              .tag{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.35px}
+              .complete .tag{background:#3a121b;color:#ff7688}.easy .tag{background:#101d35;color:#7db1ff}
+              .card h2{margin:16px 0 8px;font-size:31px;line-height:1.08;position:relative;z-index:1}
+              .ver{font-size:14px;font-weight:800;color:#dce1e9;margin-bottom:14px;position:relative;z-index:1}
+              .card p{margin:0;color:#aeb5c2;font-size:16px;line-height:1.48;position:relative;z-index:1;max-width:95%}
+              .features{display:grid;gap:10px;margin:20px 0 22px;padding:0;list-style:none;position:relative;z-index:1}
+              .features li{display:flex;align-items:center;gap:9px;color:#ecf0f6;font-size:15px}
+              .check{width:19px;height:19px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex:0 0 auto}
+              .complete .check{background:#2c1118;color:#ff5c72}.easy .check{background:#101d35;color:#78acff}
+              .btn{position:relative;z-index:1;display:block;text-align:center;padding:17px 14px;border-radius:15px;font-size:17px;font-weight:900;color:#fff}
+              .complete .btn{background:#ff2d48;box-shadow:0 10px 28px rgba(255,45,72,.22)}
+              .easy .btn{background:#2878ff;box-shadow:0 10px 28px rgba(40,120,255,.22)}
+
+              .extra{display:grid;grid-template-columns:260px 1fr;gap:18px;margin-top:18px}
+              .qrCard,.infoCard{border-radius:22px;background:linear-gradient(180deg,#10141c 0%,#0b0f15 100%);border:1px solid #242a35;padding:20px}
+              .qrCard h3,.infoCard h3{margin:0 0 8px;font-size:21px}
+              .qrCard p,.infoCard p{margin:0;color:#adb4c2;font-size:14px;line-height:1.45}
+              .qrBox{margin-top:14px;background:#fff;border-radius:18px;padding:12px;display:flex;align-items:center;justify-content:center}
+              .qrBox img{width:100%;max-width:180px;height:auto;display:block}
+              .infoList{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px;margin-top:14px}
+              .infoItem{padding:14px 14px;border-radius:16px;background:#111722;border:1px solid #242c3a}
+              .infoItem b{display:block;font-size:14px;margin-bottom:5px}.infoItem span{display:block;color:#9ea7b6;font-size:13px;line-height:1.4}
+
+              .footer{text-align:center;color:#646b78;font-size:12px;padding-top:18px}
+
+              @media(max-width:900px){
+                .hero{grid-template-columns:1fr;gap:16px}
+                .heroText h1{font-size:38px}
+                .extra{grid-template-columns:1fr}
+              }
+              @media(max-width:720px){
+                .page{padding:14px}
+                .brandText{font-size:22px}
+                .brandMark{width:34px;height:34px}
+                .siteVersion{font-size:11px}
+                .hero{padding:20px 0 14px}
+                .heroText h1{font-size:31px}
+                .heroText p{font-size:14px}
+                .chips{gap:8px}
+                .chip{font-size:11px;padding:7px 10px}
+                .actions{gap:10px}
+                .btnMain,.btnGhost{min-width:0;flex:1 1 100%;font-size:14px;padding:14px 16px}
+                .mockWrap{padding:14px;border-radius:22px}
+                .mockBrand{font-size:22px}
+                .mockBadge{font-size:12px;padding:8px 12px}
+                .mockHero{min-height:0;padding:15px;border-radius:18px}
+                .mockHero h3{font-size:18px}.mockHero p{font-size:13px}
+                .miniGrid{gap:8px}.miniCard{min-height:64px;font-size:10px;padding:8px;border-radius:13px}
+                .versions{grid-template-columns:1fr;gap:12px}
+                .card{padding:18px;border-radius:20px}
+                .card h2{font-size:23px;margin:14px 0 7px}
+                .ver{font-size:12px;margin-bottom:10px}
+                .card p{font-size:13px;line-height:1.42}
+                .features{gap:8px;margin:16px 0 18px}
+                .features li{font-size:12px;gap:7px}
+                .check{width:17px;height:17px;font-size:10px}
+                .btn{font-size:13px;padding:14px 10px}
+                .tag{font-size:10px;padding:6px 9px}
+                .extra{gap:12px}
+                .qrCard,.infoCard{padding:16px;border-radius:18px}
+                .qrCard h3,.infoCard h3{font-size:18px}
+                .infoList{grid-template-columns:1fr 1fr;gap:10px}
+                .infoItem{padding:12px}
+              }
+              @media(max-width:480px){
+                .heroText h1{font-size:28px}
+                .mockTop{align-items:flex-start}
+                .mockBrand{font-size:18px}
+                .mockBadge{font-size:11px}
+                .infoList{grid-template-columns:1fr}
+              }
+            </style>
+          </head>
+          <body>
+            <main class="page">
+              <header>
+                <div class="brand">
+                  <div class="brandMark">R</div>
+                  <div class="brandText">RAF <span>STREAMING</span></div>
+                </div>
+                <div class="siteVersion">Escolha sua versão</div>
+              </header>
+
+              <section class="hero">
+                <div class="heroText">
+                  <h1>Duas formas de assistir</h1>
+                  <p>Escolha a versão que combina melhor com seu aparelho. A versão completa é ideal para navegar por TV, filmes e séries. A TV Fácil foi feita para abrir rápido e usar com controle remoto.</p>
+                  <div class="chips">
+                    <span class="chip">Prévia antes de assistir</span>
+                    <span class="chip">Busca e favoritos</span>
+                    <span class="chip">TV Box • Android TV • Fire TV</span>
+                  </div>
+                  <div class="actions">
+                    <a class="btnMain" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/v7.6/RAF-STREAMING-V7.6.apk">BAIXAR RAF STREAMING V7.6</a>
+                    <a class="btnGhost" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/tv-facil-stable/RAF-STREAMING-TV-FACIL.apk">BAIXAR TV FÁCIL</a>
+                  </div>
+                </div>
+
+                <div class="mockWrap">
+                  <div class="mockTop">
+                    <div class="mockBrand">RAF <span>STREAMING</span></div>
+                    <div class="mockBadge">Ativo • V7.6</div>
+                  </div>
+                  <div class="mockHero">
+                    <h3>Apresentação do app</h3>
+                    <p>Catálogo visual, prévia antes de assistir, favoritos, bloqueio adulto e navegação simples.</p>
+                    <span class="mockButton">Prévia antes de assistir</span>
+                  </div>
+                  <div class="miniGrid">
+                    <div class="miniCard on">TV ao vivo</div>
+                    <div class="miniCard">Filmes</div>
+                    <div class="miniCard">Séries</div>
+                    <div class="miniCard">Favoritos</div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="versions">
+                <article class="card complete">
+                  <span class="tag">VERSÃO COMPLETA</span>
+                  <h2>RAF STREAMING</h2>
+                  <div class="ver">V7.6</div>
+                  <p>Interface visual completa para navegar por TV, filmes e séries com mais recursos.</p>
+                  <ul class="features">
+                    <li><span class="check">✓</span> TV ao vivo</li>
+                    <li><span class="check">✓</span> Filmes e séries</li>
+                    <li><span class="check">✓</span> Busca e favoritos</li>
+                    <li><span class="check">✓</span> Prévia antes de assistir</li>
+                  </ul>
+                  <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/v7.6/RAF-STREAMING-V7.6.apk">BAIXAR V7.6</a>
+                </article>
+
+                <article class="card easy">
+                  <span class="tag">VERSÃO SIMPLES</span>
+                  <h2>RAF STREAMING TV Fácil</h2>
+                  <div class="ver">V1.0.0</div>
+                  <p>Feita para TV e controle remoto, com uso rápido, direto e lista simples de canais.</p>
+                  <ul class="features">
+                    <li><span class="check">✓</span> Abre direto na TV</li>
+                    <li><span class="check">✓</span> Lista simples de canais</li>
+                    <li><span class="check">✓</span> Controle remoto</li>
+                    <li><span class="check">✓</span> Troca rápida de canal</li>
+                  </ul>
+                  <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/tv-facil-stable/RAF-STREAMING-TV-FACIL.apk">BAIXAR TV FÁCIL</a>
+                </article>
+              </section>
+
+              <section class="extra">
+                <article class="qrCard">
+                  <h3>QR Code</h3>
+                  <p>Aponte a câmera do celular para baixar direto a versão completa do RAF STREAMING.</p>
+                  <div class="qrBox">
+                    <img alt="QR Code para baixar RAF STREAMING V7.6" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3A%2F%2Fgithub.com%2Frofranco1979-IA%2FRAF-EXTREAM-DOWNLOAD%2Freleases%2Fdownload%2Fv7.6%2FRAF-STREAMING-V7.6.apk">
+                  </div>
+                </article>
+
+                <article class="infoCard">
+                  <h3>Mais informações</h3>
+                  <p>Escolha a versão ideal para o seu aparelho e baixe direto pelos botões ou pelo QR Code.</p>
+                  <div class="infoList">
+                    <div class="infoItem"><b>Compatibilidade</b><span>Android, Android TV, TV Box, Google TV e Fire TV.</span></div>
+                    <div class="infoItem"><b>Versão completa</b><span>Catálogo visual com TV, filmes, séries, favoritos e prévia.</span></div>
+                    <div class="infoItem"><b>TV Fácil</b><span>Mais prática para quem quer ligar e assistir usando o controle remoto.</span></div>
+                    <div class="infoItem"><b>Download direto</b><span>Links prontos para APK e acesso rápido por QR Code.</span></div>
+                  </div>
+                </article>
+              </section>
+
+              <div class="footer">RAF STREAMING</div>
+            </main>
+          </body>
+          </html>
+          HTML
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          name: github-pages
+          path: site
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
