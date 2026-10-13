@@ -1,0 +1,229 @@
+name: Publicar site RAF STREAMING V7.6.1
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: true
+
+jobs:
+  publicar:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Criar site
+        shell: bash
+        run: |
+          mkdir -p site
+
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width,initial-scale=1">
+            <title>RAF STREAMING V7.6 — Download</title>
+            <meta name="description" content="Baixe o RAF STREAMING V7.6 para Android e RAF STREAMING TV Fácil.">
+            <style>
+              *{box-sizing:border-box}
+              body{margin:0;background:#07080b;color:#fff;font-family:Arial,Helvetica,sans-serif}
+              .wrap{max-width:1120px;margin:auto;padding:24px}
+              header{display:flex;align-items:center;justify-content:space-between;gap:20px;padding:18px 0;border-bottom:1px solid #242731}
+              .brand{display:flex;align-items:center;gap:14px}
+              .logoMark{width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#ff2c48,#ff6a7d);display:flex;align-items:center;justify-content:center;font-weight:900;font-size:22px;box-shadow:0 10px 24px rgba(255,44,72,.35)}
+              .logo{font-size:34px;font-weight:900;letter-spacing:-1px}.logo span{color:#ff2741}
+              .version{color:#c7cad3;font-size:17px}
+              .hero{display:grid;grid-template-columns:1.1fr .9fr;gap:26px;align-items:center;padding:42px 0 34px}
+              .hero h1{font-size:48px;margin:0 0 14px;line-height:1.08}
+              .hero p{margin:0 0 16px;color:#b7bbc6;font-size:20px;line-height:1.55}
+              .devices{font-size:18px;color:#e1e3e8;margin-top:10px}
+              .heroBadges{display:flex;flex-wrap:wrap;gap:10px;margin-top:18px}
+              .heroBadge{padding:10px 14px;border-radius:999px;background:#12151c;border:1px solid #2f3441;color:#f0f2f6;font-size:14px}
+              .phone{position:relative;min-height:520px;border-radius:34px;background:linear-gradient(180deg,#0d1016,#07080b);border:1px solid #2a3040;padding:16px;box-shadow:0 20px 60px rgba(0,0,0,.45)}
+              .phone:before{content:"";position:absolute;left:50%;top:10px;transform:translateX(-50%);width:110px;height:12px;border-radius:999px;background:#171a22}
+              .screen{height:100%;min-height:488px;border-radius:24px;background:radial-gradient(circle at top right, rgba(255,39,65,.16), transparent 35%), linear-gradient(180deg,#07111f,#05070d);padding:18px;overflow:hidden}
+              .screenTop{display:flex;justify-content:space-between;align-items:center;margin-top:10px;margin-bottom:18px}
+              .screenLogo{font-size:26px;font-weight:900;letter-spacing:-1px}.screenLogo span{color:#ff2741}
+              .chip{padding:8px 12px;border-radius:999px;background:#101722;border:1px solid #263246;color:#d9deea;font-size:12px}
+              .banner{height:156px;border-radius:18px;background:linear-gradient(135deg,#1a2435,#321723);border:1px solid #2d3442;padding:18px;display:flex;flex-direction:column;justify-content:flex-end;position:relative;overflow:hidden}
+              .banner:before{content:"";position:absolute;right:-40px;top:-20px;width:180px;height:180px;border-radius:50%;background:rgba(255,39,65,.14)}
+              .banner h3{margin:0;font-size:30px;line-height:1.04;max-width:75%}
+              .banner p{margin:8px 0 0;color:#b7bcc9}
+              .previewBtn{display:inline-block;margin-top:14px;background:#ff2741;color:#fff;font-weight:800;padding:12px 18px;border-radius:14px;font-size:14px}
+              .rowTitle{display:flex;justify-content:space-between;align-items:center;margin:16px 2px 10px;color:#fff;font-weight:800}
+              .miniRow{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+              .poster{height:110px;border-radius:16px;background:linear-gradient(180deg,#202635,#11151d);border:1px solid #313744;position:relative;overflow:hidden}
+              .poster:after{content:"";position:absolute;inset:auto 0 0 0;height:28px;background:linear-gradient(180deg,transparent,rgba(0,0,0,.65))}
+              .poster.sel{outline:2px solid #ff304a}
+              .cards{display:grid;grid-template-columns:1fr 1fr;gap:22px;margin-top:6px}
+              .card{position:relative;background:linear-gradient(180deg,#14161d,#0d0f14);border:1px solid #373a45;border-radius:26px;padding:30px;overflow:hidden}
+              .card:before{content:"";position:absolute;inset:auto -80px -120px auto;width:250px;height:250px;background:#ff27411b;border-radius:50%;filter:blur(8px)}
+              .standard{border-color:#ff3550}
+              .premium{border-color:#ff3550}
+              .badge{display:inline-block;padding:8px 14px;border-radius:999px;background:#391019;color:#ff6678;font-weight:800;font-size:13px}
+              .premium .badge{background:#ff2741;color:#fff}
+              h2{font-size:31px;margin:18px 0 10px}
+              .desc{color:#b8bdc8;font-size:17px;line-height:1.55;min-height:82px}
+              ul{padding-left:22px;line-height:1.95;color:#e6e8ed;font-size:17px}
+              .btn{display:block;position:relative;z-index:2;margin-top:24px;padding:21px 16px;border-radius:17px;background:#ff2741;color:#fff;text-decoration:none;text-align:center;font-size:21px;font-weight:900;box-shadow:0 10px 30px #ff274138}
+              .qrBox{margin-top:22px;padding:16px;border-radius:18px;background:#0e1118;border:1px solid #2c3240;display:flex;align-items:center;gap:16px}
+              .qrBox img{width:110px;height:110px;border-radius:12px;background:#fff;padding:8px}
+              .qrTitle{font-size:18px;font-weight:800;margin-bottom:6px}
+              .qrText{color:#b9becc;font-size:14px;line-height:1.5}
+              .news{margin-top:28px;padding:26px;border-radius:24px;background:linear-gradient(180deg,#10131b,#0a0c11);border:1px solid #303645}
+              .news h3{margin:0 0 14px;font-size:28px}
+              .newsGrid{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}
+              .newsItem{padding:16px 18px;border-radius:18px;background:#121722;border:1px solid #2b3341}
+              .newsItem strong{display:block;font-size:17px;margin-bottom:8px}
+              .newsItem span{color:#bac0ce;line-height:1.5;font-size:15px}
+              .note{text-align:center;color:#828794;font-size:14px;margin-top:13px}
+              footer{text-align:center;color:#777c88;padding:42px 0 18px}
+              @media(max-width:900px){
+                .hero{grid-template-columns:1fr}
+                .cards{grid-template-columns:1fr}
+              }
+              @media(max-width:760px){
+                .wrap{padding:18px}
+                header{align-items:flex-start;flex-direction:column}
+                .logo{font-size:28px}
+                .hero{padding-top:30px}
+                .hero h1{font-size:38px}
+                .hero p{font-size:18px}
+                .newsGrid{grid-template-columns:1fr}
+                .qrBox{flex-direction:column;align-items:flex-start}
+                .miniRow{grid-template-columns:repeat(4,1fr)}
+              }
+            </style>
+          </head>
+          <body>
+            <div class="wrap">
+              <header>
+                <div class="brand">
+                  <div class="logoMark">R</div>
+                  <div class="logo">RAF <span>STREAMING</span></div>
+                </div>
+                <div class="version">Streaming V7.6 • TV Fácil 1.0.0</div>
+              </header>
+
+              <section class="hero">
+                <div>
+                  <h1>Escolha como você quer assistir</h1>
+                  <p>Duas opções, dois aplicativos separados. Instale apenas o que preferir ou mantenha os dois no mesmo aparelho.</p>
+                  <div class="devices">Android • Android TV • Google TV • TV Box • Fire TV</div>
+                  <div class="heroBadges">
+                    <div class="heroBadge">Prévia antes da tela cheia</div>
+                    <div class="heroBadge">Bloqueio adulto com senha</div>
+                    <div class="heroBadge">Skins RAF Red, Azul TV e Brasil</div>
+                  </div>
+                </div>
+                <div class="phone">
+                  <div class="screen">
+                    <div class="screenTop">
+                      <div class="screenLogo">RAF <span>STREAMING</span></div>
+                      <div class="chip">Ativo • V7.6</div>
+                    </div>
+                    <div class="banner">
+                      <h3>Home do app com visual moderno</h3>
+                      <p>TV, filmes, séries, favoritos e skins</p>
+                      <span class="previewBtn">Prévia antes de assistir</span>
+                    </div>
+                    <div class="rowTitle"><span>TV AO VIVO</span><span>Todos</span></div>
+                    <div class="miniRow">
+                      <div class="poster sel"></div>
+                      <div class="poster"></div>
+                      <div class="poster"></div>
+                      <div class="poster"></div>
+                    </div>
+                    <div class="rowTitle"><span>EM ALTA</span><span>Mais</span></div>
+                    <div class="miniRow">
+                      <div class="poster"></div>
+                      <div class="poster"></div>
+                      <div class="poster"></div>
+                      <div class="poster"></div>
+                    </div>
+                  </div>
+                </div>
+              </section>
+
+              <section class="cards">
+                <article class="card standard">
+                  <span class="badge">VERSÃO ATUAL</span>
+                  <h2>RAF STREAMING V7.6</h2>
+                  <div class="desc">Catálogo visual completo para explorar TV, filmes e séries, com busca, favoritos, skins, bloqueio adulto e teste de velocidade.</div>
+
+                  <ul>
+                    <li>TV ao vivo</li>
+                    <li>Filmes e séries</li>
+                    <li>Busca e favoritos</li>
+                    <li>Prévia antes da tela cheia</li>
+                    <li>Bloqueio adulto com senha</li>
+                    <li>Teste de velocidade</li>
+                    <li>Skins RAF Red, Azul TV e Brasil</li>
+                  </ul>
+
+                  <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/v7.6/RAF-STREAMING-V7.6.apk">BAIXAR RAF STREAMING V7.6</a>
+
+                  <div class="qrBox">
+                    <img alt="QR Code para baixar RAF STREAMING V7.6" src="https://api.qrserver.com/v1/create-qr-code/?size=220x220&data=https%3A%2F%2Fgithub.com%2Frofranco1979-IA%2FRAF-EXTREAM-DOWNLOAD%2Freleases%2Fdownload%2Fv7.6%2FRAF-STREAMING-V7.6.apk">
+                    <div>
+                      <div class="qrTitle">Baixe pelo celular com QR Code</div>
+                      <div class="qrText">Aponte a câmera para baixar diretamente o APK da versão atual no seu Android.</div>
+                    </div>
+                  </div>
+                </article>
+
+                <article class="card premium">
+                  <span class="badge">TV FÁCIL</span>
+                  <h2>RAF STREAMING TV Fácil</h2>
+                  <div class="desc">Versão simplificada, feita para quem quer ligar, escolher o canal e assistir usando o controle remoto.</div>
+
+                  <ul>
+                    <li>Abre direto na TV</li>
+                    <li>Lista simples de canais</li>
+                    <li>Navegação pelo controle</li>
+                    <li>Troca rápida de canal</li>
+                    <li>Review e programação</li>
+                  </ul>
+
+                  <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/tv-facil-stable/RAF-STREAMING-TV-FACIL.apk">BAIXAR TV FÁCIL</a>
+                </article>
+              </section>
+
+              <section class="news">
+                <h3>Novidades da V7.6</h3>
+                <div class="newsGrid">
+                  <div class="newsItem"><strong>Bloqueio adulto reforçado</strong><span>Agora o filtro atua também pela categoria do servidor, escondendo esses conteúdos da home, prévia e listas.</span></div>
+                  <div class="newsItem"><strong>Favoritos</strong><span>Itens favoritos ficam acessíveis diretamente no aplicativo para abrir seu conteúdo mais rápido.</span></div>
+                  <div class="newsItem"><strong>Skins extras</strong><span>Escolha entre RAF Red, Azul TV e Brasil para personalizar o visual do app.</span></div>
+                  <div class="newsItem"><strong>Teste de velocidade</strong><span>Verifique se sua internet está dentro do mínimo recomendado para reduzir travamentos no streaming.</span></div>
+                </div>
+              </section>
+
+              <p class="note">Os dois aplicativos podem ficar instalados ao mesmo tempo.</p>
+              <footer>RAF STREAMING • V7.6</footer>
+            </div>
+          </body>
+          </html>
+          HTML
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar site
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: site
+
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
