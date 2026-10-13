@@ -1,0 +1,188 @@
+name: Publicar site RAF STREAMING V7.6.9
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+
+      - name: Criar site
+        shell: bash
+        run: |
+          mkdir -p site
+
+          cat > site/index.html <<'HTML'
+          <!doctype html>
+          <html lang="pt-BR">
+          <head>
+            <meta charset="utf-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+            <title>RAF STREAMING — Download</title>
+            <meta name="description" content="Escolha sua versão do RAF STREAMING.">
+            <style>
+              *{box-sizing:border-box}
+              html,body{margin:0;min-height:100%;background:#07090d;color:#fff;font-family:Arial,Helvetica,sans-serif}
+              body{background:
+                radial-gradient(circle at 15% 12%,rgba(255,45,72,.10),transparent 28%),
+                radial-gradient(circle at 88% 18%,rgba(40,120,255,.10),transparent 30%),
+                #07090d}
+              .page{max-width:1100px;margin:0 auto;padding:22px 22px 28px}
+              header{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:6px 0 18px;border-bottom:1px solid #20242d}
+              .brand{display:flex;align-items:center;gap:11px}
+              .brandMark{width:38px;height:38px;border-radius:11px;display:flex;align-items:center;justify-content:center;background:#ff2d48;font-weight:900;font-size:20px;box-shadow:0 8px 24px rgba(255,45,72,.25)}
+              .brandText{font-size:28px;font-weight:900;letter-spacing:-.6px}
+              .brandText span{color:#ff2d48}
+              .siteVersion{font-size:13px;color:#8f97a6}
+
+              .intro{text-align:center;padding:34px 0 24px}
+              .intro h1{margin:0 0 10px;font-size:40px;line-height:1.08}
+              .intro p{margin:0;color:#aeb5c2;font-size:17px}
+
+              .versions{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+              .card{position:relative;min-height:410px;border-radius:26px;padding:26px;border:1px solid #2a2f39;background:linear-gradient(180deg,#12151c 0%,#0b0e13 100%);overflow:hidden}
+              .card:after{content:"";position:absolute;width:240px;height:240px;border-radius:50%;right:-90px;bottom:-110px;filter:blur(16px);opacity:.35;pointer-events:none}
+              .complete{border-color:#5b2631}
+              .complete:after{background:#ff2d48}
+              .easy{border-color:#263d63}
+              .easy:after{background:#2b78ff}
+              .tag{display:inline-flex;align-items:center;gap:7px;padding:7px 11px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.35px}
+              .complete .tag{background:#3a121b;color:#ff7688}
+              .easy .tag{background:#101d35;color:#7db1ff}
+              .icon{font-size:28px;margin:22px 0 10px}
+              .card h2{margin:0 0 8px;font-size:29px;line-height:1.08}
+              .card .ver{font-size:14px;font-weight:800;color:#dce1e9;margin-bottom:14px}
+              .card p{margin:0;color:#aeb5c2;font-size:16px;line-height:1.5;max-width:94%}
+              .features{display:grid;gap:10px;margin:22px 0 24px;padding:0;list-style:none}
+              .features li{display:flex;align-items:center;gap:9px;color:#e6e9ef;font-size:15px}
+              .check{width:19px;height:19px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-size:12px;font-weight:900;flex:0 0 auto}
+              .complete .check{background:#2c1118;color:#ff5c72}
+              .easy .check{background:#101d35;color:#78acff}
+              .btn{position:relative;z-index:2;display:block;text-decoration:none;text-align:center;padding:17px 14px;border-radius:15px;font-size:17px;font-weight:900;margin-top:auto}
+              .complete .btn{background:#ff2d48;color:white;box-shadow:0 10px 28px rgba(255,45,72,.22)}
+              .easy .btn{background:#2878ff;color:white;box-shadow:0 10px 28px rgba(40,120,255,.22)}
+              .cardInner{height:100%;display:flex;flex-direction:column}
+              .cardBody{flex:1}
+              .footer{text-align:center;color:#646b78;font-size:12px;padding-top:18px}
+
+              @media(max-width:720px){
+                .page{padding:16px}
+                .brandText{font-size:22px}
+                .brandMark{width:34px;height:34px}
+                .siteVersion{font-size:11px}
+                .intro{padding:24px 0 18px}
+                .intro h1{font-size:31px}
+                .intro p{font-size:14px}
+                .versions{gap:12px}
+                .card{padding:18px;min-height:355px;border-radius:20px}
+                .icon{font-size:23px;margin:15px 0 8px}
+                .card h2{font-size:21px}
+                .card .ver{font-size:12px;margin-bottom:10px}
+                .card p{font-size:13px;line-height:1.42}
+                .features{gap:8px;margin:16px 0 18px}
+                .features li{font-size:12px;gap:7px}
+                .check{width:17px;height:17px;font-size:10px}
+                .btn{font-size:13px;padding:14px 10px}
+                .tag{font-size:10px;padding:6px 9px}
+              }
+
+              @media(max-width:480px){
+                .versions{grid-template-columns:1fr}
+                .card{min-height:0}
+              }
+            </style>
+          </head>
+          <body>
+            <main class="page">
+              <header>
+                <div class="brand">
+                  <div class="brandMark">R</div>
+                  <div class="brandText">RAF <span>STREAMING</span></div>
+                </div>
+                <div class="siteVersion">Escolha sua versão</div>
+              </header>
+
+              <section class="intro">
+                <h1>Duas formas de assistir</h1>
+                <p>Escolha a versão que combina melhor com seu aparelho e seu jeito de usar.</p>
+              </section>
+
+              <section class="versions">
+                <article class="card complete">
+                  <div class="cardInner">
+                    <div class="cardBody">
+                      <span class="tag">VERSÃO COMPLETA</span>
+                      <div class="icon">▣</div>
+                      <h2>RAF STREAMING</h2>
+                      <div class="ver">V7.6</div>
+                      <p>Interface visual completa para navegar por TV, filmes e séries.</p>
+                      <ul class="features">
+                        <li><span class="check">✓</span> TV ao vivo</li>
+                        <li><span class="check">✓</span> Filmes e séries</li>
+                        <li><span class="check">✓</span> Busca e favoritos</li>
+                        <li><span class="check">✓</span> Prévia antes de assistir</li>
+                      </ul>
+                    </div>
+                    <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/v7.6/RAF-STREAMING-V7.6.apk">BAIXAR V7.6</a>
+                  </div>
+                </article>
+
+                <article class="card easy">
+                  <div class="cardInner">
+                    <div class="cardBody">
+                      <span class="tag">VERSÃO SIMPLES</span>
+                      <div class="icon">▶</div>
+                      <h2>RAF STREAMING TV Fácil</h2>
+                      <div class="ver">V1.0.0</div>
+                      <p>Feita para TV e controle remoto, com uso rápido e direto.</p>
+                      <ul class="features">
+                        <li><span class="check">✓</span> Abre direto na TV</li>
+                        <li><span class="check">✓</span> Lista simples de canais</li>
+                        <li><span class="check">✓</span> Controle remoto</li>
+                        <li><span class="check">✓</span> Troca rápida de canal</li>
+                      </ul>
+                    </div>
+                    <a class="btn" href="https://github.com/rofranco1979-IA/RAF-EXTREAM-DOWNLOAD/releases/download/tv-facil-stable/RAF-STREAMING-TV-FACIL.apk">BAIXAR TV FÁCIL</a>
+                  </div>
+                </article>
+              </section>
+
+              <div class="footer">RAF STREAMING</div>
+            </main>
+          </body>
+          </html>
+          HTML
+
+      - name: Configurar Pages
+        uses: actions/configure-pages@v5
+
+      - name: Enviar site
+        uses: actions/upload-pages-artifact@v4
+        with:
+          name: github-pages
+          path: site
+          retention-days: 1
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+
+    steps:
+      - name: Publicar
+        id: deployment
+        uses: actions/deploy-pages@v4
+        with:
+          artifact_name: github-pages
